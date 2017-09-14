@@ -13,6 +13,7 @@ namespace V_Soccer
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
+            Helper.CheckGener("Masculino");
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
