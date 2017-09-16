@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Web;
 
 namespace Domain
 {
@@ -74,12 +77,18 @@ namespace Domain
 
         public bool Anickname { get; set; }
 
+        [DataType(DataType.ImageUrl)]
         public string Image { get; set; }
+
+        [NotMapped]
+        public HttpPostedFileBase LogoFile { get; set; }
 
         public virtual Gener Gener { get; set; }
 
         public virtual Country Country { get; set; }
 
         public virtual City City { get; set; }
+
+        public virtual ICollection<PlayerTeam> PlayersTeams { get; set; }
     }
 }
