@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using Domain;
+using System;
 using System.Data.Entity;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Net;
-using System.Web;
+using System.Threading.Tasks;
 using System.Web.Mvc;
-using Domain;
+using V_Soccer.Clases;
 using V_Soccer.Models;
 
 namespace V_Soccer.Controllers
@@ -19,7 +16,7 @@ namespace V_Soccer.Controllers
         // GET: Players
         public async Task<ActionResult> Index()
         {
-            var players = db.Players.Include(p => p.City).Include(p => p.Country);
+            var players = db.Players.Include(p => p.City).Include(p => p.Country).Include(p => p.Department).Include(p => p.Gener );
             return View(await players.ToListAsync());
         }
 
@@ -30,7 +27,7 @@ namespace V_Soccer.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Player player = await db.Players.FindAsync(id);
+            var player = await db.Players.FindAsync(id);
             if (player == null)
             {
                 return HttpNotFound();
@@ -41,7 +38,9 @@ namespace V_Soccer.Controllers
         // GET: Players/Create
         public ActionResult Create()
         {
+            ViewBag.GenerId = new SelectList(db.Geners, "GenerId", "Name");
             ViewBag.CityId = new SelectList(db.Cities, "CityId", "Name");
+            ViewBag.DepartmentId = new SelectList(db.Departments, "DepartmentId", "Name");
             ViewBag.CountryId = new SelectList(db.Countries, "CountryId", "Name");
             return View();
         }
@@ -51,16 +50,40 @@ namespace V_Soccer.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "PlayerId,Name,LastName,BirthDate,SexId,Phone,CityId,CountryId,CoordX,CoordY,Email,Weight,Height,Position,Skill1,Skill2,Skill3,Skill4,Skill5,Stars,Qualification,Friendly,Goals,RedCards,YellowCards,Nickname,Anickname,Image")] Player player)
+        public async Task<ActionResult> Create(Player player)
         {
             if (ModelState.IsValid)
             {
-                db.Players.Add(player);
-                await db.SaveChangesAsync();
+                try
+                {
+                    db.Players.Add(player);
+                    await db.SaveChangesAsync();
+
+                    if(player.LogoFile != null)
+                    {
+                        var file = string.Format("{0}.jpg", player.PlayerId);
+                        var folder = "~/Content/Logos";
+                        var response = FileHelper.UploadPhoto(player.LogoFile, folder, file);
+
+                        if (response)
+                        {
+                            player.Image = string.Format("{0}/{1}", folder, file);
+                            db.Entry(player).State = EntityState.Modified;
+                            db.SaveChanges();
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
                 return RedirectToAction("Index");
             }
 
+            ViewBag.GenerId = new SelectList(db.Geners, "GenerId", "Name", player.GenerId);
             ViewBag.CityId = new SelectList(db.Cities, "CityId", "Name", player.CityId);
+            ViewBag.DepartmentId = new SelectList(db.Departments, "DepartmentId", "Name",player.DepartmentId);
             ViewBag.CountryId = new SelectList(db.Countries, "CountryId", "Name", player.CountryId);
             return View(player);
         }
@@ -72,12 +95,14 @@ namespace V_Soccer.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Player player = await db.Players.FindAsync(id);
+            var player = await db.Players.FindAsync(id);
             if (player == null)
             {
                 return HttpNotFound();
             }
+            ViewBag.GenerId = new SelectList(db.Geners, "GenerId", "Name", player.GenerId);
             ViewBag.CityId = new SelectList(db.Cities, "CityId", "Name", player.CityId);
+            ViewBag.DepartmentId = new SelectList(db.Departments, "DepartmentId", "Name", player.DepartmentId);
             ViewBag.CountryId = new SelectList(db.Countries, "CountryId", "Name", player.CountryId);
             return View(player);
         }
@@ -87,15 +112,26 @@ namespace V_Soccer.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "PlayerId,Name,LastName,BirthDate,SexId,Phone,CityId,CountryId,CoordX,CoordY,Email,Weight,Height,Position,Skill1,Skill2,Skill3,Skill4,Skill5,Stars,Qualification,Friendly,Goals,RedCards,YellowCards,Nickname,Anickname,Image")] Player player)
+        public async Task<ActionResult> Edit(Player player)
         {
             if (ModelState.IsValid)
             {
+                var file = string.Format("{0}.jpg", player.PlayerId);
+                var folder = "~/Content/Logos";
+                var response = FileHelper.UploadPhoto(player.LogoFile, folder, file);
+
+                if (response)
+                {
+                    player.Image = string.Format("{0}/{1}", folder, file);
+
+                }
                 db.Entry(player).State = EntityState.Modified;
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
+            ViewBag.GenerId = new SelectList(db.Geners, "GenerId", "Name", player.GenerId);
             ViewBag.CityId = new SelectList(db.Cities, "CityId", "Name", player.CityId);
+            ViewBag.DepartmentId = new SelectList(db.Departments, "DepartmentId", "Name", player.DepartmentId);
             ViewBag.CountryId = new SelectList(db.Countries, "CountryId", "Name", player.CountryId);
             return View(player);
         }
@@ -107,7 +143,7 @@ namespace V_Soccer.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Player player = await db.Players.FindAsync(id);
+            var player = await db.Players.FindAsync(id);
             if (player == null)
             {
                 return HttpNotFound();

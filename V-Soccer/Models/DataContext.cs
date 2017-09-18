@@ -25,5 +25,15 @@ namespace V_Soccer.Models
         public System.Data.Entity.DbSet<Domain.Gener> Geners { get; set; }
 
         public System.Data.Entity.DbSet<Domain.Player> Players { get; set; }
+
+        public System.Data.Entity.DbSet<Domain.Match> Matches { get; set; }
+
+        public System.Data.Entity.DbSet<Domain.Status> Status { get; set; }
+
+        public System.Data.Entity.DbSet<Domain.PlayerTeam> PlayerTeams { get; set; }
+
+        public System.Data.Entity.DbSet<Domain.Team> Teams { get; set; }
+
+        public System.Data.Entity.DbSet<Domain.Department> Departments { get; set; }
     }
 }

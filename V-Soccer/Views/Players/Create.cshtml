@@ -1,13 +1,13 @@
 ﻿@model Domain.Player
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Player";
 }
 
-<h2>Create</h2>
+<h2>Player</h2>
 
 
-@using (Html.BeginForm()) 
+@using (Html.BeginForm("Create", "Players", FormMethod.Post, new { enctype = "multi/part/form-data" }))
 {
     @Html.AntiForgeryToken()
     
@@ -40,12 +40,13 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.SexId, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.GenerId, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.SexId, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.SexId, "", new { @class = "text-danger" })
+                @Html.DropDownList("GenerId", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.GenerId, "", new { @class = "text-danger" })
             </div>
         </div>
+
 
         <div class="form-group">
             @Html.LabelFor(model => model.Phone, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -55,21 +56,31 @@
             </div>
         </div>
 
+
         <div class="form-group">
-            @Html.LabelFor(model => model.CityId, "CityId", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.CountryId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("CountryId", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.CountryId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DepartmentId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("DepartmentId", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.DepartmentId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CityId, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.DropDownList("CityId", null, htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.CityId, "", new { @class = "text-danger" })
             </div>
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.CountryId, "CountryId", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("CountryId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.CountryId, "", new { @class = "text-danger" })
-            </div>
-        </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.CoordX, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -228,23 +239,38 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Image, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Image, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Image, "", new { @class = "text-danger" })
+                <div class="file-input-new">
+                    <div class="input-group" style="width:280px">
+                        <div tabindex="500" class="form-control file-caption">
+                            <div class="file-caption-name" id="NombreArchivo">
+                            </div>
+                        </div>
+                        <div class="input-group-btn" style="height:auto">
+                            <div tabindex="500" class="btn btn-primary btn-file">
+                                <i class="glyphicon glyphicon-folder-open"></i>
+                                File Search...
+                                @Html.TextBoxFor(modelo => modelo.LogoFile, new { type = "file", id = "files" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Create" class="btn btn-primary" />
+                @Html.ActionLink("Back to List", "Index", new { }, new { @class = "btn btn-success" })
             </div>
         </div>
     </div>
 }
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
-
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        var Url = '@Url.Action("GetCities", "Generic")';
+        var Url1 = '@Url.Action("GetStates", "Generic")';
+</script>
+
 }

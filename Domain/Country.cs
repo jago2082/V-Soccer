@@ -12,7 +12,9 @@ namespace Domain
         [Display(Name = "Country")]
         public string Name { get; set; }
 
-        public virtual ICollection<City> Citys { get; set; }
+        public int DepartmentId { get; set; }
+
+        public virtual ICollection<Department> Citys { get; set; }
 
         public virtual ICollection<Player> Players { get; set; }
     }

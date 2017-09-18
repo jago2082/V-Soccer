@@ -12,112 +12,116 @@ using V_Soccer.Models;
 
 namespace V_Soccer.Controllers
 {
-    public class CitiesController : Controller
+    public class TeamsController : Controller
     {
         private DataContext db = new DataContext();
 
-        // GET: Cities
+        // GET: Teams
         public async Task<ActionResult> Index()
         {
-            var cities = db.Cities.Include(c => c.Department);
-            return View(await cities.ToListAsync());
+            var teams = db.Teams.Include(t => t.City).Include(t => t.Country);
+            return View(await teams.ToListAsync());
         }
 
-        // GET: Cities/Details/5
+        // GET: Teams/Details/5
         public async Task<ActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var city = await db.Cities.FindAsync(id);
-            if (city == null)
+            Team team = await db.Teams.FindAsync(id);
+            if (team == null)
             {
                 return HttpNotFound();
             }
-            return View(city);
+            return View(team);
         }
 
-        // GET: Cities/Create
+        // GET: Teams/Create
         public ActionResult Create()
         {
-            ViewBag.DepartmentId = new SelectList(db.Departments, "DepartmentId", "Name");
+            ViewBag.CityId = new SelectList(db.Cities, "CityId", "Name");
+            ViewBag.CountryId = new SelectList(db.Countries, "CountryId", "Name");
             return View();
         }
 
-        // POST: Cities/Create
+        // POST: Teams/Create
         // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que desea enlazarse. Para obtener 
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(City city)
+        public async Task<ActionResult> Create([Bind(Include = "TeamId,Name,AdminEmail,creationdate,Formato,NumJugadores,Logo,CityId,CountryId,MatchesWon,LostMatches,DrawnMatches,GoalsScored,GoalsAgainst")] Team team)
         {
             if (ModelState.IsValid)
             {
-                db.Cities.Add(city);
+                db.Teams.Add(team);
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.Department = new SelectList(db.Departments, "DeparmentId", "Name", city.DepartmentId);
-            return View(city);
+            ViewBag.CityId = new SelectList(db.Cities, "CityId", "Name", team.CityId);
+            ViewBag.CountryId = new SelectList(db.Countries, "CountryId", "Name", team.CountryId);
+            return View(team);
         }
 
-        // GET: Cities/Edit/5
+        // GET: Teams/Edit/5
         public async Task<ActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var city = await db.Cities.FindAsync(id);
-            if (city == null)
+            Team team = await db.Teams.FindAsync(id);
+            if (team == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.Department = new SelectList(db.Departments, "DeparmentId", "Name", city.DepartmentId);
-            return View(city);
+            ViewBag.CityId = new SelectList(db.Cities, "CityId", "Name", team.CityId);
+            ViewBag.CountryId = new SelectList(db.Countries, "CountryId", "Name", team.CountryId);
+            return View(team);
         }
 
-        // POST: Cities/Edit/5
+        // POST: Teams/Edit/5
         // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que desea enlazarse. Para obtener 
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(City city)
+        public async Task<ActionResult> Edit([Bind(Include = "TeamId,Name,AdminEmail,creationdate,Formato,NumJugadores,Logo,CityId,CountryId,MatchesWon,LostMatches,DrawnMatches,GoalsScored,GoalsAgainst")] Team team)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(city).State = EntityState.Modified;
+                db.Entry(team).State = EntityState.Modified;
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ViewBag.Department = new SelectList(db.Departments, "DeparmentId", "Name", city.DepartmentId);
-            return View(city);
+            ViewBag.CityId = new SelectList(db.Cities, "CityId", "Name", team.CityId);
+            ViewBag.CountryId = new SelectList(db.Countries, "CountryId", "Name", team.CountryId);
+            return View(team);
         }
 
-        // GET: Cities/Delete/5
+        // GET: Teams/Delete/5
         public async Task<ActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            City city = await db.Cities.FindAsync(id);
-            if (city == null)
+            Team team = await db.Teams.FindAsync(id);
+            if (team == null)
             {
                 return HttpNotFound();
             }
-            return View(city);
+            return View(team);
         }
 
-        // POST: Cities/Delete/5
+        // POST: Teams/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            City city = await db.Cities.FindAsync(id);
-            db.Cities.Remove(city);
+            Team team = await db.Teams.FindAsync(id);
+            db.Teams.Remove(team);
             await db.SaveChangesAsync();
             return RedirectToAction("Index");
         }

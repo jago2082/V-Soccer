@@ -24,13 +24,19 @@ namespace Domain
         [Display(Name = "Birth Date")]
         public DateTime BirthDate { get; set; }
 
-        public int SexId { get; set; }
+        [Display(Name = "Gener")]
+        public int GenerId { get; set; }
 
         [DataType(DataType.PhoneNumber)]
         public int Phone { get; set; }
 
+        [Display(Name = "City")]
         public int CityId { get; set; }
 
+        [Display(Name = "City")]
+        public int DepartmentId { get; set; }
+
+        [Display(Name = "Country")]
         public int CountryId { get; set; }
 
         public double CoordX { get; set; }
@@ -87,6 +93,7 @@ namespace Domain
 
         public virtual Country Country { get; set; }
 
+        public virtual Department Department { get; set; }
         public virtual City City { get; set; }
 
         public virtual ICollection<PlayerTeam> PlayersTeams { get; set; }

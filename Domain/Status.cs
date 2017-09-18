@@ -14,7 +14,6 @@ namespace Domain
 
         [Required(ErrorMessage = "The field {0} is required")]
         [MaxLength(50, ErrorMessage = "The maximun length for field {0} is {1} characters")]
-        [Index("Status_Name_Index", IsUnique = true)]
         [Display(Name = "Status")]
         public string Name { get; set; }
 

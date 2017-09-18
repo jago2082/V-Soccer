@@ -12,112 +12,112 @@ using V_Soccer.Models;
 
 namespace V_Soccer.Controllers
 {
-    public class CitiesController : Controller
+    public class DepartmentsController : Controller
     {
         private DataContext db = new DataContext();
 
-        // GET: Cities
+        // GET: Departments
         public async Task<ActionResult> Index()
         {
-            var cities = db.Cities.Include(c => c.Department);
-            return View(await cities.ToListAsync());
+            var departments = db.Departments.Include(d => d.Country);
+            return View(await departments.ToListAsync());
         }
 
-        // GET: Cities/Details/5
+        // GET: Departments/Details/5
         public async Task<ActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var city = await db.Cities.FindAsync(id);
-            if (city == null)
+            Department department = await db.Departments.FindAsync(id);
+            if (department == null)
             {
                 return HttpNotFound();
             }
-            return View(city);
+            return View(department);
         }
 
-        // GET: Cities/Create
+        // GET: Departments/Create
         public ActionResult Create()
         {
-            ViewBag.DepartmentId = new SelectList(db.Departments, "DepartmentId", "Name");
+            ViewBag.CountryId = new SelectList(db.Countries, "CountryId", "Name");
             return View();
         }
 
-        // POST: Cities/Create
+        // POST: Departments/Create
         // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que desea enlazarse. Para obtener 
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(City city)
+        public async Task<ActionResult> Create([Bind(Include = "DepartmentId,Name,CountryId")] Department department)
         {
             if (ModelState.IsValid)
             {
-                db.Cities.Add(city);
+                db.Departments.Add(department);
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.Department = new SelectList(db.Departments, "DeparmentId", "Name", city.DepartmentId);
-            return View(city);
+            ViewBag.CountryId = new SelectList(db.Countries, "CountryId", "Name", department.CountryId);
+            return View(department);
         }
 
-        // GET: Cities/Edit/5
+        // GET: Departments/Edit/5
         public async Task<ActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var city = await db.Cities.FindAsync(id);
-            if (city == null)
+            Department department = await db.Departments.FindAsync(id);
+            if (department == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.Department = new SelectList(db.Departments, "DeparmentId", "Name", city.DepartmentId);
-            return View(city);
+            ViewBag.CountryId = new SelectList(db.Countries, "CountryId", "Name", department.CountryId);
+            return View(department);
         }
 
-        // POST: Cities/Edit/5
+        // POST: Departments/Edit/5
         // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que desea enlazarse. Para obtener 
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(City city)
+        public async Task<ActionResult> Edit([Bind(Include = "DepartmentId,Name,CountryId")] Department department)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(city).State = EntityState.Modified;
+                db.Entry(department).State = EntityState.Modified;
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ViewBag.Department = new SelectList(db.Departments, "DeparmentId", "Name", city.DepartmentId);
-            return View(city);
+            ViewBag.CountryId = new SelectList(db.Countries, "CountryId", "Name", department.CountryId);
+            return View(department);
         }
 
-        // GET: Cities/Delete/5
+        // GET: Departments/Delete/5
         public async Task<ActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            City city = await db.Cities.FindAsync(id);
-            if (city == null)
+            Department department = await db.Departments.FindAsync(id);
+            if (department == null)
             {
                 return HttpNotFound();
             }
-            return View(city);
+            return View(department);
         }
 
-        // POST: Cities/Delete/5
+        // POST: Departments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            City city = await db.Cities.FindAsync(id);
-            db.Cities.Remove(city);
+            Department department = await db.Departments.FindAsync(id);
+            db.Departments.Remove(department);
             await db.SaveChangesAsync();
             return RedirectToAction("Index");
         }

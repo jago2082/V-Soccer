@@ -1,10 +1,10 @@
-﻿@model IEnumerable<Domain.Gener>
+﻿@model IEnumerable<Domain.Status>
 
 @{
-    ViewBag.Title = "Genero";
+    ViewBag.Title = "Index";
 }
 
-<h2>Genero</h2>
+<h2>Index</h2>
 
 <p>
     @Html.ActionLink("Create New", "Create")
@@ -23,9 +23,9 @@
             @Html.DisplayFor(modelItem => item.Name)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.GenerId }) |
-            @Html.ActionLink("Details", "Details", new { id=item.GenerId }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.GenerId })
+            @Html.ActionLink("Edit", "Edit", new { id=item.StatusId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.StatusId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.StatusId })
         </td>
     </tr>
 }

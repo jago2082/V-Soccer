@@ -12,112 +12,107 @@ using V_Soccer.Models;
 
 namespace V_Soccer.Controllers
 {
-    public class CitiesController : Controller
+    public class PlayerTeamsController : Controller
     {
         private DataContext db = new DataContext();
 
-        // GET: Cities
+        // GET: PlayerTeams
         public async Task<ActionResult> Index()
         {
-            var cities = db.Cities.Include(c => c.Department);
-            return View(await cities.ToListAsync());
+            return View(await db.PlayerTeams.ToListAsync());
         }
 
-        // GET: Cities/Details/5
+        // GET: PlayerTeams/Details/5
         public async Task<ActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var city = await db.Cities.FindAsync(id);
-            if (city == null)
+            PlayerTeam playerTeam = await db.PlayerTeams.FindAsync(id);
+            if (playerTeam == null)
             {
                 return HttpNotFound();
             }
-            return View(city);
+            return View(playerTeam);
         }
 
-        // GET: Cities/Create
+        // GET: PlayerTeams/Create
         public ActionResult Create()
         {
-            ViewBag.DepartmentId = new SelectList(db.Departments, "DepartmentId", "Name");
             return View();
         }
 
-        // POST: Cities/Create
+        // POST: PlayerTeams/Create
         // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que desea enlazarse. Para obtener 
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(City city)
+        public async Task<ActionResult> Create([Bind(Include = "PlayerTeamId,PlayerId,TeamId")] PlayerTeam playerTeam)
         {
             if (ModelState.IsValid)
             {
-                db.Cities.Add(city);
+                db.PlayerTeams.Add(playerTeam);
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.Department = new SelectList(db.Departments, "DeparmentId", "Name", city.DepartmentId);
-            return View(city);
+            return View(playerTeam);
         }
 
-        // GET: Cities/Edit/5
+        // GET: PlayerTeams/Edit/5
         public async Task<ActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var city = await db.Cities.FindAsync(id);
-            if (city == null)
+            PlayerTeam playerTeam = await db.PlayerTeams.FindAsync(id);
+            if (playerTeam == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.Department = new SelectList(db.Departments, "DeparmentId", "Name", city.DepartmentId);
-            return View(city);
+            return View(playerTeam);
         }
 
-        // POST: Cities/Edit/5
+        // POST: PlayerTeams/Edit/5
         // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que desea enlazarse. Para obtener 
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(City city)
+        public async Task<ActionResult> Edit([Bind(Include = "PlayerTeamId,PlayerId,TeamId")] PlayerTeam playerTeam)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(city).State = EntityState.Modified;
+                db.Entry(playerTeam).State = EntityState.Modified;
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ViewBag.Department = new SelectList(db.Departments, "DeparmentId", "Name", city.DepartmentId);
-            return View(city);
+            return View(playerTeam);
         }
 
-        // GET: Cities/Delete/5
+        // GET: PlayerTeams/Delete/5
         public async Task<ActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            City city = await db.Cities.FindAsync(id);
-            if (city == null)
+            PlayerTeam playerTeam = await db.PlayerTeams.FindAsync(id);
+            if (playerTeam == null)
             {
                 return HttpNotFound();
             }
-            return View(city);
+            return View(playerTeam);
         }
 
-        // POST: Cities/Delete/5
+        // POST: PlayerTeams/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            City city = await db.Cities.FindAsync(id);
-            db.Cities.Remove(city);
+            PlayerTeam playerTeam = await db.PlayerTeams.FindAsync(id);
+            db.PlayerTeams.Remove(playerTeam);
             await db.SaveChangesAsync();
             return RedirectToAction("Index");
         }
